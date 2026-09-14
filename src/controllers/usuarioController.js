@@ -10,6 +10,27 @@ async function cadastrarUsuario(req, res) {
             return res.status(400).json({ mensagem: "Todos os campos são obrigatórios" })
         }
 
+        // email no formato padrão
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // não pode caracteres especiais e pode conter espaços
+        const nomeRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+
+        // mínimo de 8 caracteres, pelo menos 1 letra maiúscula, pelo menos 1 letra minúscula, pelo menos 1 caractere especial
+        const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+
+       if (!nomeRegex.test(nome)) {
+            return res.status(400).json({mensagem: "O nome não pode conter caracteres especiais"})
+       }
+
+       if (!emailRegex.test(email)) {
+            return res.status(400).json({mensagem: "O email não está no formato válido"})
+       }
+
+       if (!senhaRegex.test(senha)) {
+            return res.status(400).json({mensagem: "O email não está no formato válido"})
+       }
+
         const passwordHash = await bcrypt.hash(String(senha), 10)
 
         const { data, error } = await supabase
